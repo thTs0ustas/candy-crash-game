@@ -1,25 +1,62 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { useApp } from "./useApp";
+import {
+  dragDrop,
+  dragEnd,
+  dragStart,
+} from "./constantsAndFunctions/dragFunctionality";
+import Scoreboard from "./components/scoreboard";
 
-function App() {
+const App = () => {
+  const {
+    showScore,
+    currentColorArrangement,
+    setDraggedSquare,
+    setReplacedSquare,
+    draggedSquare,
+    replacedSquare,
+    setCurrentColorArrangement,
+  } = useApp();
+
+  const dEnd = (event) =>
+    dragEnd(
+      event,
+      draggedSquare,
+      replacedSquare,
+      currentColorArrangement,
+      setDraggedSquare,
+      setReplacedSquare,
+      setCurrentColorArrangement
+    );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Scoreboard score={showScore} />
+      <div className="game">
+        {currentColorArrangement.map((candyColor, index) => (
+          <img
+            src={candyColor}
+            key={index}
+            alt={candyColor}
+            data-id={index}
+            draggable={true}
+            onDragStart={(event) => dragStart(event, setDraggedSquare)}
+            onDragOver={(event) => {
+              event.preventDefault();
+            }}
+            onDragEnter={(event) => {
+              event.preventDefault();
+            }}
+            onDragLeave={(event) => {
+              event.preventDefault();
+            }}
+            onDrop={(event) => dragDrop(event, setReplacedSquare)}
+            onDragEnd={dEnd}
+          />
+        ))}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
